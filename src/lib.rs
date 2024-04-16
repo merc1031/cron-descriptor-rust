@@ -148,6 +148,7 @@ pub mod cronparser {
         pub zero_based_day_of_week: bool,
         pub twenty_four_hour_time: bool,
         pub need_space_between_words: bool,
+        pub normalize_cron_intervals: bool,
     }
 
     impl Options {
@@ -159,6 +160,7 @@ pub mod cronparser {
                 zero_based_day_of_week: true,
                 twenty_four_hour_time: false,
                 need_space_between_words: true,
+                normalize_cron_intervals: true,
             };
         }
 
@@ -280,25 +282,27 @@ pub mod cronparser {
                 normalised[3] = normalised[3].replace("?", "*");
                 normalised[5] = normalised[5].replace("?", "*");
 
-                (0..=2).for_each(|i| {
-                    normalised[i] = if normalised[i].starts_with("0/") {
-                        normalised[i].replace("0/", "*/")
-                    } else {
-                        normalised[i].to_string()
-                    }
-                });
+                if options.normalize_cron_intervals {
+                    (0..=2).for_each(|i| {
+                        normalised[i] = if normalised[i].starts_with("0/") {
+                            normalised[i].replace("0/", "*/")
+                        } else {
+                            normalised[i].to_string()
+                        }
+                    });
 
-                (3..=5).for_each(|i| {
-                    normalised[i] = if normalised[i].starts_with("1/") {
-                        normalised[i].replace("1/", "*/")
-                    } else {
-                        normalised[i].to_string()
-                    }
-                });
+                    (3..=5).for_each(|i| {
+                        normalised[i] = if normalised[i].starts_with("1/") {
+                            normalised[i].replace("1/", "*/")
+                        } else {
+                            normalised[i].to_string()
+                        }
+                    });
 
-                for i in 0..normalised.len() {
-                    if normalised[i] == "*/1" {
-                        normalised[i] = "*".to_string();
+                    for i in 0..normalised.len() {
+                        if normalised[i] == "*/1" {
+                            normalised[i] = "*".to_string();
+                        }
                     }
                 }
                 // println!("normalised after replacing */1: {:?}", normalised);
