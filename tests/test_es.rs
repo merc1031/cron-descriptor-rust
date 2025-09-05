@@ -1,11 +1,9 @@
-use cron_descriptor;
 extern crate strfmt;
 
 use cron_descriptor::cronparser::Options;
 mod test_utils;
 use crate::test_utils::unwrapped_description_options;
 use crate::test_utils::unwrapped_description;
-use ctor;
 
 
 #[ctor::ctor]
@@ -222,7 +220,7 @@ fn test_once_aweek() {
 fn test_once_aweek_non_zero_based() {
     let options = Options {
         zero_based_day_of_week: false,
-        ..Options::options()
+        ..Options::new()
     };
     assert_eq!(
         "En 9:46 AM, sólo en domingo",
@@ -267,7 +265,7 @@ fn test_twice_aweek() {
 fn test_twice_aweek_non_zero_based() {
     let options = Options {
         zero_based_day_of_week: false,
-        ..Options::options()
+        ..Options::new()
     };
     assert_eq!(
         "En 9:46 AM, sólo en domingo y lunes",
